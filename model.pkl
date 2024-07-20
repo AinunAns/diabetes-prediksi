@@ -1,0 +1,23 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+import pickle
+
+data = pd.read_csv('diabetes_prediction_dataset.csv')
+
+# Pra-pemrosesan data
+le = LabelEncoder()
+for col in ['gender', 'smoking_history']:
+    data[col] = le.fit_transform(data[col])
+
+X = data.drop('outcome', axis=1)
+y = data['outcome']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+model = GaussianNB()
+model.fit(X_train, y_train)
+
+# Simpan model
+with open('model.pkl', 'wb') as f:
+    pickle.dump(model, f)
